@@ -1,62 +1,29 @@
-export const CHARS = " ... ... . . :::=+xX#0369";
-export const DPR = 2;
-export const FONT_SIZE = 10;
-export const ASCII_COLS = 50;
-export const SCRAMBLE_COUNT = 5;
-export const SCRAMBLE_SPEED_MS = 100;
-export const CELL_APPEAR_MS = 1.25;
-export const REVEAL_DELAY_MS = 0;
+const CHARS = "'^\" . ,-_+*oaM#%@";
+const DPR = 2;
+const FONT_SIZE = 10;
+const ASCII_COLS = 50;
+const REVEAL_DELAY_MS = 50;
 
-export type ASCIIImageConfig = {
-  chars: string;
-  dpr: number;
-  fontSize: number;
-  asciiCols: number;
-  scrambleCount: number;
-  scrambleSpeedMs: number;
-  cellAppearMs: number;
-  revealDelayMs: number;
-};
-
-export const DEFAULT_ASCII_IMAGE_CONFIG: ASCIIImageConfig = {
-  chars: CHARS,
-  dpr: DPR,
-  fontSize: FONT_SIZE,
-  asciiCols: ASCII_COLS,
-  scrambleCount: SCRAMBLE_COUNT,
-  scrambleSpeedMs: SCRAMBLE_SPEED_MS,
-  cellAppearMs: CELL_APPEAR_MS,
-  revealDelayMs: REVEAL_DELAY_MS,
-};
-
-export function getASCIIMetrics(
-  width: number,
-  height: number,
-  fontSize: number,
-  asciiCols: number,
-) {
+export function getASCIIMetrics(width: number, height: number) {
   if (!width || !height) {
     return {
-      ASCII_ROWS: 0,
-      CHAR_WIDTH: 0,
-      CHAR_HEIGHT: 0,
+      asciiRows: 0,
+      charWidth: 0,
+      charHeight: 0,
     };
   }
 
   return {
-    ASCII_ROWS: Math.max(1, Math.ceil(height / fontSize)),
-    CHAR_WIDTH: width / asciiCols,
-    CHAR_HEIGHT: fontSize,
+    asciiRows: Math.max(1, Math.ceil(height / FONT_SIZE)),
+    charWidth: width / ASCII_COLS,
+    charHeight: FONT_SIZE,
   };
 }
 
 export function imgToASCII(
   img: HTMLImageElement,
-  ASCII_ROWS: number,
   itemWidth: number,
   itemHeight: number,
-  chars: string,
-  asciiCols: number,
 ) {
   const imageAspect = img.naturalWidth / img.naturalHeight;
   const itemAspect = itemWidth / itemHeight;
@@ -75,15 +42,25 @@ export function imgToASCII(
   }
 
   const samplingCanvas = document.createElement("canvas");
-  samplingCanvas.width = asciiCols;
-  samplingCanvas.height = ASCII_ROWS;
+  samplingCanvas.width = ASCII_COLS;
+  samplingCanvas.height = Math.max(1, Math.ceil(itemHeight / FONT_SIZE));
 
   const ctx = samplingCanvas.getContext("2d");
   if (!ctx) return null;
 
-  ctx.drawImage(img, cropX, cropY, cropW, cropH, 0, 0, asciiCols, ASCII_ROWS);
+  ctx.drawImage(
+    img,
+    cropX,
+    cropY,
+    cropW,
+    cropH,
+    0,
+    0,
+    ASCII_COLS,
+    samplingCanvas.height,
+  );
 
-  const imageData = ctx.getImageData(0, 0, asciiCols, ASCII_ROWS);
+  const imageData = ctx.getImageData(0, 0, ASCII_COLS, samplingCanvas.height);
   const { data } = imageData;
 
   for (let i = 0; i < data.length; i += 4) {
@@ -98,15 +75,15 @@ export function imgToASCII(
 
   ctx.putImageData(imageData, 0, 0);
 
-  const ASCII_GRID: string[][] = [];
-  const BRIGHTNESS_GRID: number[][] = [];
+  const asciiGrid: string[][] = [];
+  const brightnessGrid: number[][] = [];
 
-  for (let row = 0; row < ASCII_ROWS; row++) {
+  for (let row = 0; row < samplingCanvas.height; row++) {
     const asciiRow: string[] = [];
     const brightnessRow: number[] = [];
 
-    for (let col = 0; col < asciiCols; col++) {
-      const pixelIndex = (row * asciiCols + col) * 4;
+    for (let col = 0; col < ASCII_COLS; col++) {
+      const pixelIndex = (row * ASCII_COLS + col) * 4;
 
       const brightness =
         (data[pixelIndex] * 0.299 +
@@ -115,21 +92,21 @@ export function imgToASCII(
         255;
 
       const charIndex = Math.min(
-        chars.length - 1,
-        Math.floor((1 - brightness) * (chars.length - 1)),
+        CHARS.length - 1,
+        Math.floor((1 - brightness) * (CHARS.length - 1)),
       );
 
-      asciiRow.push(chars[charIndex]);
+      asciiRow.push(CHARS[charIndex]);
       brightnessRow.push(charIndex);
     }
 
-    ASCII_GRID.push(asciiRow);
-    BRIGHTNESS_GRID.push(brightnessRow);
+    asciiGrid.push(asciiRow);
+    brightnessGrid.push(brightnessRow);
   }
 
   return {
-    ASCII_GRID,
-    BRIGHTNESS_GRID,
+    asciiGrid,
+    brightnessGrid,
   };
 }
 
@@ -184,26 +161,29 @@ function scheduleImgReveal(canvas: HTMLCanvasElement, revealDelayMs: number) {
 
 export function animateASCII(
   canvas: HTMLCanvasElement,
-  ASCII_GRID: string[][],
-  BRIGHTNESS_GRID: number[][],
-  ASCII_ROWS: number,
-  CHAR_WIDTH: number,
-  CHAR_HEIGHT: number,
+  asciiGrid: string[][],
+  brightnessGrid: number[][],
+  charWidth: number,
+  charHeight: number,
   staggerDelay: number,
-  config: ASCIIImageConfig,
+  scrambleCount: number,
+  scrambleSpeedMs: number,
+  cellAppearMs: number,
 ) {
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
 
-  ctx.font = `${config.fontSize}px JetBrains Mono`;
+  ctx.font = `${FONT_SIZE}px JetBrains Mono`;
   ctx.textBaseline = "top";
 
-  const denseCharIndex = config.chars.lastIndexOf(".");
+  const denseCharIndex = CHARS.lastIndexOf(".");
   const denseChars =
     denseCharIndex >= 0
-      ? config.chars.slice(denseCharIndex + 1).split("")
-      : config.chars.split("");
-  const totalCells = ASCII_ROWS * config.asciiCols;
+      ? CHARS.slice(denseCharIndex + 1).split("")
+      : CHARS.split("");
+  const asciiCols = ASCII_COLS;
+  const asciiRows = asciiGrid.length;
+  const totalCells = asciiRows * asciiCols;
   const scrambleState = new Array(totalCells).fill(null);
 
   let settledCount = 0;
@@ -215,20 +195,13 @@ export function animateASCII(
   cellOrder.forEach((cellIndex, orderIndex) => {
     setTimeout(
       () => {
-        const row = Math.floor(cellIndex / config.asciiCols);
-        const col = cellIndex % config.asciiCols;
+        const row = Math.floor(cellIndex / asciiCols);
+        const col = cellIndex % asciiCols;
 
-        const isDark = BRIGHTNESS_GRID[row][col] > denseCharIndex;
+        const isDark = brightnessGrid[row][col] > denseCharIndex;
 
         if (!isDark) {
-          drawChar(
-            ctx,
-            col,
-            row,
-            ASCII_GRID[row][col],
-            CHAR_WIDTH,
-            CHAR_HEIGHT,
-          );
+          drawChar(ctx, col, row, asciiGrid[row][col], charWidth, charHeight);
           scrambleState[cellIndex] = 0;
           settledCount++;
           return;
@@ -239,13 +212,13 @@ export function animateASCII(
           col,
           row,
           denseChars[Math.floor(Math.random() * denseChars.length)],
-          CHAR_WIDTH,
-          CHAR_HEIGHT,
+          charWidth,
+          charHeight,
         );
 
-        scrambleState[cellIndex] = config.scrambleCount;
+        scrambleState[cellIndex] = scrambleCount;
       },
-      staggerDelay + orderIndex * config.cellAppearMs,
+      staggerDelay + orderIndex * cellAppearMs,
     );
   });
 
@@ -261,16 +234,16 @@ export function animateASCII(
 
       active = true;
 
-      const row = Math.floor(cellIndex / config.asciiCols);
-      const col = cellIndex % config.asciiCols;
+      const row = Math.floor(cellIndex / asciiCols);
+      const col = cellIndex % asciiCols;
 
       if (remaining === 1) {
-        drawChar(ctx, col, row, ASCII_GRID[row][col], CHAR_WIDTH, CHAR_HEIGHT);
+        drawChar(ctx, col, row, asciiGrid[row][col], charWidth, charHeight);
         scrambleState[cellIndex] = 0;
         settledCount++;
 
         if (settledCount === totalCells) {
-          scheduleImgReveal(canvas, config.revealDelayMs);
+          scheduleImgReveal(canvas, REVEAL_DELAY_MS);
         }
       } else {
         drawChar(
@@ -278,8 +251,8 @@ export function animateASCII(
           col,
           row,
           denseChars[Math.floor(Math.random() * denseChars.length)],
-          CHAR_WIDTH,
-          CHAR_HEIGHT,
+          charWidth,
+          charHeight,
         );
 
         scrambleState[cellIndex] = remaining - 1;
@@ -289,7 +262,7 @@ export function animateASCII(
     if (!active) {
       clearInterval(interval);
     }
-  }, config.scrambleSpeedMs);
+  }, scrambleSpeedMs);
 }
 
 export function startEffect(
@@ -298,31 +271,24 @@ export function startEffect(
   width: number,
   height: number,
   staggerDelay: number,
-  ASCII_ROWS: number,
-  CHAR_WIDTH: number,
-  CHAR_HEIGHT: number,
-  config: ASCIIImageConfig,
+  scrambleCount: number,
+  scrambleSpeedMs: number,
+  cellAppearMs: number,
 ) {
-  const result = imgToASCII(
-    img,
-    ASCII_ROWS,
-    width,
-    height,
-    config.chars,
-    config.asciiCols,
-  );
+  const result = imgToASCII(img, width, height);
   if (!result) return;
 
-  prepCanvas(canvas, width, height, config.dpr);
+  prepCanvas(canvas, width, height, DPR);
 
   animateASCII(
     canvas,
-    result.ASCII_GRID,
-    result.BRIGHTNESS_GRID,
-    ASCII_ROWS,
-    CHAR_WIDTH,
-    CHAR_HEIGHT,
+    result.asciiGrid,
+    result.brightnessGrid,
+    width / ASCII_COLS,
+    FONT_SIZE,
     staggerDelay,
-    config,
+    scrambleCount,
+    scrambleSpeedMs,
+    cellAppearMs,
   );
 }

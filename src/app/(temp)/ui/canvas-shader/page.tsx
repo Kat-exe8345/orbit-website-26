@@ -2,55 +2,32 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import {
-  ASCII_COLS,
-  CELL_APPEAR_MS,
-  CHARS,
-  DEFAULT_ASCII_IMAGE_CONFIG,
-  DPR,
-  FONT_SIZE,
-  getASCIIMetrics,
-  REVEAL_DELAY_MS,
-  SCRAMBLE_COUNT,
-  SCRAMBLE_SPEED_MS,
-  startEffect,
-} from "./utils";
+import { getASCIIMetrics, startEffect } from "./utils";
 import "./styles.css";
 
 type ASCIIImageProps = {
   src: string;
-  delay?: number;
-  chars?: string;
-  dpr?: number;
-  fontSize?: number;
-  asciiCols?: number;
   scrambleCount?: number;
   scrambleSpeedMs?: number;
   cellAppearMs?: number;
-  revealDelayMs?: number;
+  staggerDelay?: number;
 };
 
 function ASCIIImage({
   src,
-  delay = 0,
-  chars = CHARS,
-  dpr = DPR,
-  fontSize = FONT_SIZE,
-  asciiCols = ASCII_COLS,
-  scrambleCount = SCRAMBLE_COUNT,
-  scrambleSpeedMs = SCRAMBLE_SPEED_MS,
-  cellAppearMs = CELL_APPEAR_MS,
-  revealDelayMs = REVEAL_DELAY_MS,
+  scrambleCount = 5,
+  scrambleSpeedMs = 100,
+  cellAppearMs = 1.25,
+  staggerDelay = 0,
 }: ASCIIImageProps) {
   const imageRef = useRef<HTMLImageElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const [box, setBox] = useState({ width: 0, height: 0 });
-  const [metrics, setMetrics] = useState({
-    ASCII_ROWS: 0,
-    CHAR_WIDTH: 0,
-    CHAR_HEIGHT: 0,
-  });
+  const { asciiRows, charWidth, charHeight } = getASCIIMetrics(
+    box.width,
+    box.height,
+  );
 
   useEffect(() => {
     const updateBox = () => {
@@ -83,10 +60,6 @@ function ASCIIImage({
   }, []);
 
   useEffect(() => {
-    setMetrics(getASCIIMetrics(box.width, box.height, fontSize, asciiCols));
-  }, [asciiCols, box.height, box.width, fontSize]);
-
-  useEffect(() => {
     const img = imageRef.current;
     const canvas = canvasRef.current;
 
@@ -95,9 +68,9 @@ function ASCIIImage({
       !canvas ||
       !box.width ||
       !box.height ||
-      !metrics.ASCII_ROWS ||
-      !metrics.CHAR_WIDTH ||
-      !metrics.CHAR_HEIGHT
+      !asciiRows ||
+      !charWidth ||
+      !charHeight
     ) {
       return;
     }
@@ -108,21 +81,10 @@ function ASCIIImage({
         canvas,
         box.width,
         box.height,
-        delay,
-        metrics.ASCII_ROWS,
-        metrics.CHAR_WIDTH,
-        metrics.CHAR_HEIGHT,
-        {
-          ...DEFAULT_ASCII_IMAGE_CONFIG,
-          chars,
-          dpr,
-          fontSize,
-          asciiCols,
-          scrambleCount,
-          scrambleSpeedMs,
-          cellAppearMs,
-          revealDelayMs,
-        },
+        staggerDelay,
+        scrambleCount,
+        scrambleSpeedMs,
+        cellAppearMs,
       );
     };
 
@@ -137,20 +99,15 @@ function ASCIIImage({
       img.removeEventListener("load", start);
     };
   }, [
-    asciiCols,
     box.height,
     box.width,
     cellAppearMs,
-    chars,
-    delay,
-    dpr,
-    fontSize,
-    metrics.ASCII_ROWS,
-    metrics.CHAR_WIDTH,
-    metrics.CHAR_HEIGHT,
-    revealDelayMs,
     scrambleCount,
     scrambleSpeedMs,
+    staggerDelay,
+    asciiRows,
+    charWidth,
+    charHeight,
   ]);
 
   return (
@@ -165,14 +122,48 @@ function ASCIIImage({
 
 export default function Page() {
   return (
-    <main className="h-screen w-full flex items-center justify-center">
+    <main className="h-screen w-full grid grid-cols-3 gap-10">
       <ASCIIImage
-        src="\images\members\Bala Aditya.jpeg"
-        delay={0}
-        scrambleCount={SCRAMBLE_COUNT}
-        scrambleSpeedMs={SCRAMBLE_SPEED_MS}
-        cellAppearMs={CELL_APPEAR_MS}
-        revealDelayMs={REVEAL_DELAY_MS}
+        src="\images\misc\SpaceX.jpg"
+        scrambleCount={5}
+        scrambleSpeedMs={100}
+        cellAppearMs={1.25}
+        staggerDelay={0}
+      />
+      <ASCIIImage
+        src="\images\members\Parth Dinil.jpg"
+        scrambleCount={5}
+        scrambleSpeedMs={100}
+        cellAppearMs={1.25}
+        staggerDelay={0}
+      />
+      <ASCIIImage
+        src="\images\members\Bala Guru Prasaad.jpg"
+        scrambleCount={5}
+        scrambleSpeedMs={100}
+        cellAppearMs={1.25}
+        staggerDelay={0}
+      />
+      <ASCIIImage
+        src="\images\members\Giridhar Ajith.jpg"
+        scrambleCount={5}
+        scrambleSpeedMs={100}
+        cellAppearMs={1.25}
+        staggerDelay={0}
+      />
+      <ASCIIImage
+        src="\images\members\Nikita Soni.jpg"
+        scrambleCount={5}
+        scrambleSpeedMs={100}
+        cellAppearMs={1.25}
+        staggerDelay={0}
+      />
+      <ASCIIImage
+        src="\images\members\Vaishnav S.jpg"
+        scrambleCount={5}
+        scrambleSpeedMs={100}
+        cellAppearMs={1.25}
+        staggerDelay={0}
       />
     </main>
   );
