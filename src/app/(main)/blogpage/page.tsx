@@ -160,7 +160,7 @@ export default function BlogPage() {
               key={post.title}
               className="overflow-hidden border border-white/15 bg-black/75"
             >
-              <div className="relative aspect-[16/10] bg-white/5">
+              <div className="relative aspect-16/10 bg-white/5">
                 <Image
                   src={post.image}
                   alt=""

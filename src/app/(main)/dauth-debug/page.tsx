@@ -74,7 +74,7 @@ export default async function DauthDebugPage({
         {decodedError ? (
           <div className="rounded-lg border border-red-400/50 bg-red-950/30 p-5">
             <h2 className="text-xl font-semibold text-red-200">Error</h2>
-            <pre className="mt-4 max-h-[28rem] overflow-auto whitespace-pre-wrap text-sm text-red-100">
+            <pre className="mt-4 max-h-112 overflow-auto whitespace-pre-wrap text-sm text-red-100">
               {typeof decodedError === "string"
                 ? decodedError
                 : JSON.stringify(decodedError, null, 2)}
@@ -87,7 +87,7 @@ export default async function DauthDebugPage({
             <h2 className="text-xl font-semibold text-emerald-200">
               DAuth Response
             </h2>
-            <pre className="mt-4 max-h-[36rem] overflow-auto whitespace-pre-wrap text-sm text-emerald-50">
+            <pre className="mt-4 max-h-144 overflow-auto whitespace-pre-wrap text-sm text-emerald-50">
               {JSON.stringify(decodedResult, null, 2)}
             </pre>
           </div>

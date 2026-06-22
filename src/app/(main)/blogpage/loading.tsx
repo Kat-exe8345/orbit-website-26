@@ -47,7 +47,7 @@ export default function BlogLoading() {
               key={card}
               className="overflow-hidden border border-white/15 bg-black/75"
             >
-              <div className="aspect-[16/10] bg-white/10" />
+              <div className="aspect-16/10 bg-white/10" />
               <div className="flex min-h-72 flex-col justify-between gap-6 p-5">
                 <div>
                   <div className="mb-4 flex gap-3">
