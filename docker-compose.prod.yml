@@ -1,0 +1,57 @@
+services:
+  orbit-web:
+    build:
+      context: .
+      target: runner
+    env_file: 
+      - .env
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://orbit_nitt:${DB_PASSWORD}@orbit-db:5432/orbit_nitt
+    depends_on:
+      orbit-db:
+        condition: service_healthy
+    networks:
+      - orbit-custom-network  
+  orbit-db:
+    image: postgres:17
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: orbit_nitt
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: orbit_nitt
+    volumes:
+      - orbit_db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U orbit_nitt -d orbit_nitt"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - orbit-custom-network
+
+  migrate:
+    profiles: ["tools"]
+    env_file:
+      - .env
+    build:
+      context: .
+      target: migrate
+    environment:
+      DATABASE_URL: postgresql://orbit_nitt:${DB_PASSWORD}@orbit-db:5432/orbit_nitt
+    depends_on:
+      orbit-db:
+        condition: service_healthy
+    networks:
+      - orbit-custom-network
+
+volumes:
+  orbit_db:
+
+networks:
+  orbit-custom-network:
+    external: true
+      

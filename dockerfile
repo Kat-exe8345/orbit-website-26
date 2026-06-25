@@ -30,10 +30,22 @@ COPY . .
 RUN pnpm prisma generate
 RUN pnpm build
 
+# ============ Migration stage ==============
+FROM base AS migrate
+
+# copy installed deps from folder to container
+COPY --from=deps /app/node_modules ./node_modules
+
+# copy prisma schema and package.json to container
+COPY prisma ./prisma
+COPY package.json ./
+COPY prisma.config.ts ./
+
+# run prisma migrations
+CMD ["pnpm", "prisma", "migrate", "deploy"]
 
 # ============ Runner stage ==============
 FROM node:${NODE_VERSION}-slim AS runner
-RUN corepack enable
 WORKDIR /app
 
 ENV NODE_ENV=production
@@ -58,4 +70,4 @@ USER node
 EXPOSE 3000
 
 # start the server
-CMD ["sh", "-c", "pnpm prisma migrate deploy && node server.js"]
+CMD ["node", "server.js"]
