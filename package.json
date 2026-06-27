@@ -8,8 +8,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "biome check",
-    "format": "biome format --write"
+    "format": "biome format --write",
+    "generate:types": "payload generate:types --output src/payload-types.ts"
   },
+  "type": "module",
   "dependencies": {
     "@icons-pack/react-simple-icons": "^13.13.0",
     "@payloadcms/db-postgres": "^3.85.1",
