@@ -1,10 +1,17 @@
 import { CollectionConfig } from 'payload';
+import { editor } from '../Users/access/accessRoles';
 
 export const Members: CollectionConfig = {
     slug: 'members',
     admin: {
         group: 'Orbit-Teams',
         useAsTitle: 'name',
+    },
+    access: {
+        read: editor,
+        create: editor,
+        update: editor,
+        delete: editor,
     },
     fields: [
         {
@@ -22,7 +29,7 @@ export const Members: CollectionConfig = {
                 description: 'This image will be used for the member card',
             },
             type: 'upload',
-            relationTo: 'media',
+            relationTo: 'team-media',
             required: false,
         },
         {

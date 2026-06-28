@@ -1,10 +1,17 @@
 import { CollectionConfig } from 'payload';
+import { editor } from '../Users/access/accessRoles';
 
 export const Year: CollectionConfig = {
     slug: 'year',
     admin: {
         group: 'Orbit-Teams',
         useAsTitle: 'label',
+    },
+    access: {
+        read: editor,
+        create: editor,
+        update: editor,
+        delete: editor,
     },
     fields: [
         {

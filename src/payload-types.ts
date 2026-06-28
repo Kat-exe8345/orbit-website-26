@@ -69,11 +69,12 @@ export interface Config {
   collections: {
     'payload-users': PayloadUser;
     media: Media;
+    members: Member;
+    membership: Membership;
     'member-roles': MemberRole;
     teams: Team;
     year: Year;
-    members: Member;
-    membership: Membership;
+    'team-media': TeamMedia;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -83,11 +84,12 @@ export interface Config {
   collectionsSelect: {
     'payload-users': PayloadUsersSelect<false> | PayloadUsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    members: MembersSelect<false> | MembersSelect<true>;
+    membership: MembershipSelect<false> | MembershipSelect<true>;
     'member-roles': MemberRolesSelect<false> | MemberRolesSelect<true>;
     teams: TeamsSelect<false> | TeamsSelect<true>;
     year: YearSelect<false> | YearSelect<true>;
-    members: MembersSelect<false> | MembersSelect<true>;
-    membership: MembershipSelect<false> | MembershipSelect<true>;
+    'team-media': TeamMediaSelect<false> | TeamMediaSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -110,22 +112,34 @@ export interface Config {
   };
 }
 export interface PayloadUserAuthOperations {
-  forgotPassword: {
-    email: string;
-    password: string;
-  };
-  login: {
-    email: string;
-    password: string;
-  };
+  forgotPassword:
+    | {
+        email: string;
+      }
+    | {
+        username: string;
+      };
+  login:
+    | {
+        email: string;
+        password: string;
+      }
+    | {
+        password: string;
+        username: string;
+      };
   registerFirstUser: {
-    email: string;
     password: string;
-  };
-  unlock: {
+    username: string;
     email: string;
-    password: string;
   };
+  unlock:
+    | {
+        email: string;
+      }
+    | {
+        username: string;
+      };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -133,10 +147,11 @@ export interface PayloadUserAuthOperations {
  */
 export interface PayloadUser {
   id: number;
-  roles: 'admin' | 'editor' | 'user';
+  roles: 'super-admin' | 'admin' | 'editor' | 'user';
   updatedAt: string;
   createdAt: string;
   email: string;
+  username: string;
   resetPasswordToken?: string | null;
   resetPasswordExpiration?: string | null;
   salt?: string | null;
@@ -180,6 +195,69 @@ export interface Media {
       filesize?: number | null;
       filename?: string | null;
     };
+  };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "members".
+ */
+export interface Member {
+  id: number;
+  /**
+   * Full name of the member
+   */
+  name: string;
+  /**
+   * This image will be used for the member card
+   */
+  profilePicture?: (number | null) | TeamMedia;
+  /**
+   * Department to which the member belongs
+   */
+  department: 'cse' | 'ece' | 'eee' | 'ice' | 'me' | 'mme' | 'pe' | 'ce' | 'ch';
+  /**
+   * Add up to 4 unique social links for this member
+   */
+  socialLinks?:
+    | {
+        platform: 'instagram' | 'linkedin' | 'github' | 'website';
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "team-media".
+ */
+export interface TeamMedia {
+  id: number;
+  /**
+   * This text will be used as the title for the image
+   */
+  alt: string;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+  sizes?: {
+    thumbnail?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
     'member-card'?: {
       url?: string | null;
       width?: number | null;
@@ -188,15 +266,50 @@ export interface Media {
       filesize?: number | null;
       filename?: string | null;
     };
-    webLogo?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
   };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "membership".
+ */
+export interface Membership {
+  id: number;
+  /**
+   * Select the member for this membership
+   */
+  member: number | Member;
+  /**
+   * Select the team for this membership
+   */
+  team: number | Team;
+  /**
+   * Select the role for this membership
+   */
+  role: number | MemberRole;
+  /**
+   * Select the year for this membership
+   */
+  year: number | Year;
+  /**
+   * Select the study year for this membership
+   */
+  studyYear: 'year1' | 'year2' | 'year3' | 'year4';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "teams".
+ */
+export interface Team {
+  id: number;
+  name: string;
+  slug: string;
+  description?: string | null;
+  teamLogo?: (number | null) | Media;
+  displayOrder: number;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -225,20 +338,6 @@ export interface MemberRole {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "teams".
- */
-export interface Team {
-  id: number;
-  name: string;
-  slug: string;
-  description?: string | null;
-  teamLogo?: (number | null) | Media;
-  displayOrder: number;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "year".
  */
 export interface Year {
@@ -255,66 +354,6 @@ export interface Year {
    * Ending year (e.g., 2023, 2024)
    */
   endYear: number;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "members".
- */
-export interface Member {
-  id: number;
-  /**
-   * Full name of the member
-   */
-  name: string;
-  /**
-   * This image will be used for the member card
-   */
-  profilePicture?: (number | null) | Media;
-  /**
-   * Department to which the member belongs
-   */
-  department: 'cse' | 'ece' | 'eee' | 'ice' | 'me' | 'mme' | 'pe' | 'ce' | 'ch';
-  /**
-   * Add up to 4 unique social links for this member
-   */
-  socialLinks?:
-    | {
-        platform: 'instagram' | 'linkedin' | 'github' | 'website';
-        url: string;
-        id?: string | null;
-      }[]
-    | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "membership".
- */
-export interface Membership {
-  id: number;
-  /**
-   * Select the member for this membership
-   */
-  member: number | Member;
-  /**
-   * Select the team for this membership
-   */
-  team: number | Team;
-  /**
-   * Select the role for this membership
-   */
-  role: number | MemberRole;
-  /**
-   * Select the year for this membership
-   */
-  year: number | Year;
-  /**
-   * Select the study year for this membership
-   */
-  studyYear: 'year1' | 'year2' | 'year3' | 'year4';
   updatedAt: string;
   createdAt: string;
 }
@@ -351,6 +390,14 @@ export interface PayloadLockedDocument {
         value: number | Media;
       } | null)
     | ({
+        relationTo: 'members';
+        value: number | Member;
+      } | null)
+    | ({
+        relationTo: 'membership';
+        value: number | Membership;
+      } | null)
+    | ({
         relationTo: 'member-roles';
         value: number | MemberRole;
       } | null)
@@ -363,12 +410,8 @@ export interface PayloadLockedDocument {
         value: number | Year;
       } | null)
     | ({
-        relationTo: 'members';
-        value: number | Member;
-      } | null)
-    | ({
-        relationTo: 'membership';
-        value: number | Membership;
+        relationTo: 'team-media';
+        value: number | TeamMedia;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -421,6 +464,7 @@ export interface PayloadUsersSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   email?: T;
+  username?: T;
   resetPasswordToken?: T;
   resetPasswordExpiration?: T;
   salt?: T;
@@ -465,27 +509,38 @@ export interface MediaSelect<T extends boolean = true> {
               filesize?: T;
               filename?: T;
             };
-        'member-card'?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-        webLogo?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
       };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "members_select".
+ */
+export interface MembersSelect<T extends boolean = true> {
+  name?: T;
+  profilePicture?: T;
+  department?: T;
+  socialLinks?:
+    | T
+    | {
+        platform?: T;
+        url?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "membership_select".
+ */
+export interface MembershipSelect<T extends boolean = true> {
+  member?: T;
+  team?: T;
+  role?: T;
+  year?: T;
+  studyYear?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -525,34 +580,45 @@ export interface YearSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "members_select".
+ * via the `definition` "team-media_select".
  */
-export interface MembersSelect<T extends boolean = true> {
-  name?: T;
-  profilePicture?: T;
-  department?: T;
-  socialLinks?:
+export interface TeamMediaSelect<T extends boolean = true> {
+  alt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+  sizes?:
     | T
     | {
-        platform?: T;
-        url?: T;
-        id?: T;
+        thumbnail?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        'member-card'?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
       };
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "membership_select".
- */
-export interface MembershipSelect<T extends boolean = true> {
-  member?: T;
-  team?: T;
-  role?: T;
-  year?: T;
-  studyYear?: T;
-  updatedAt?: T;
-  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

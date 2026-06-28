@@ -1,12 +1,13 @@
 import type { CollectionConfig } from 'payload'
-import { user, admin, self } from './access/accessRoles'
+import { admin, self } from './access/accessRoles'
 import type { PayloadUser } from '@payload-types'
 import { checkRole } from './access/checkRole'
 
 export const PayloadUsers: CollectionConfig = {
   slug: 'payload-users',
   admin: {
-    useAsTitle: 'email',
+    useAsTitle: 'username',
+    group: 'Admin',
   },
   access: {
     create: admin,
@@ -14,7 +15,12 @@ export const PayloadUsers: CollectionConfig = {
     update: self,
     delete: admin,
   },
-  auth: true,
+  auth: {
+    loginWithUsername: {
+      allowEmailLogin: true,
+      requireEmail: true,
+    },
+  },
   fields: [
     {
       name: 'roles',
@@ -22,15 +28,16 @@ export const PayloadUsers: CollectionConfig = {
       type: 'select',
       saveToJWT: true,
       options: [
+        {label: 'Super Admin', value: 'super-admin'},
         {label: 'Admin', value: 'admin'},
         {label: 'Editor', value: 'editor'},
         {label: 'User', value: 'user'},
       ],
       required: true,
       access: {
-        read: ({req: {user}}) => checkRole(['admin'], user as PayloadUser),
-        create: ({req: {user}}) => checkRole(['admin'], user as PayloadUser),
-        update: ({req: {user}}) => checkRole(['admin'], user as PayloadUser),
+        read: ({req: {user}}) => checkRole(['super-admin', 'admin'], user as PayloadUser),
+        create: ({req: {user}}) => checkRole(['super-admin'], user as PayloadUser),
+        update: ({req: {user}}) => checkRole(['super-admin'], user as PayloadUser),
       },
     },
     {

@@ -1,4 +1,5 @@
 import { CollectionConfig } from "payload";
+import { editor } from "../Users/access/accessRoles";
 
 export const Membership: CollectionConfig = {
     slug: "membership",
@@ -6,6 +7,13 @@ export const Membership: CollectionConfig = {
         group: "Orbit-Teams",
         useAsTitle: "id",
     },
+    access: {
+        read: editor,
+        create: editor,
+        update: editor,
+        delete: editor,
+    },
+
     fields: [
         {
             name: "member",
