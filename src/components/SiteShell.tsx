@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-import Nav from "./Nav";
+import Navbar from "./Navbar";
 import Particles from "./Particles";
 
 type SiteShellProps = {
@@ -26,7 +26,7 @@ export default function SiteShell({ children }: SiteShellProps) {
     <div className="text-white min-h-screen font-mono overflow-x-hidden max-w-full">
       <Particles />
       <div className="relative w-full overflow-hidden min-h-screen">
-        <Nav />
+        <Navbar />
         {children}
       </div>
     </div>

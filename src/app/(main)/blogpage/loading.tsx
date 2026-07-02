@@ -2,7 +2,7 @@ const cardSkeletons = ["first", "second", "third"];
 
 export default function BlogLoading() {
   return (
-    <main className="min-h-screen px-5 pb-20 pt-10 sm:px-8 lg:px-16">
+    <main className="min-h-screen px-5 pb-20 pt-14 sm:px-8 lg:px-16">
       <section className="mx-auto max-w-6xl animate-pulse">
         <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>

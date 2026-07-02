@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-
+import Nav from "@/components/Navbar";
 import "@/app/(main)/globals.css";
 
 
@@ -12,7 +12,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body>
-        {children}
+        <div className="min-h-screen overflow-hidden w-full">
+          <Nav />
+          {children}
+        </div>
       </body>
     </html>
   );
