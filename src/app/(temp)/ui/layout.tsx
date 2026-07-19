@@ -10,12 +10,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body>
-        <div className="min-h-screen overflow-hidden w-full">
-          <Nav />
-          {children}
-        </div>
+    <html lang="en" className="scroll-smooth dark suppressHydrationWarning">
+      <body className="min-h-screen antialiased">
+        <Nav />
+        {children}
       </body>
     </html>
   );

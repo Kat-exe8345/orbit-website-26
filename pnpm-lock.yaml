@@ -50,6 +50,9 @@ importers:
       payload:
         specifier: ^3.85.1
         version: 3.85.1(graphql@16.14.2)(typescript@5.9.3)
+      pg:
+        specifier: ^8.22.0
+        version: 8.22.0
       postgres:
         specifier: ^3.4.9
         version: 3.4.9
@@ -76,6 +79,9 @@ importers:
       '@types/node':
         specifier: ^20
         version: 20.19.43
+      '@types/pg':
+        specifier: ^8.20.0
+        version: 8.20.0
       '@types/react':
         specifier: ^19
         version: 19.2.17
