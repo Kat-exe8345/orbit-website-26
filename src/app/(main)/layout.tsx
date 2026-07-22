@@ -1,22 +1,19 @@
 import type { Metadata } from "next";
+import Nav from "@/components/Navbar";
+import "@/app/(main)/globals.css";
 
-import "./globals.css";
-import SiteShell from "@/components/SiteShell";
 
 export const metadata: Metadata = {
   title: "Orbit",
   description: "Orbit NIT Trichy migration to Next.js",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body>
-        <SiteShell>{children}</SiteShell>
+    <html lang="en" className="scroll-smooth dark suppressHydrationWarning">
+      <body className="min-h-screen antialiased">
+        <Nav />
+        {children}
       </body>
     </html>
   );

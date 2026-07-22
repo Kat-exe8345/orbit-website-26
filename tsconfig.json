@@ -34,7 +34,10 @@
       ],
       "@payload-collections/*": [
         "./src/collections/*"
-      ]
+      ],
+      "@components/*": [
+        "./src/components/*"
+      ],
     }
   },
   "include": [

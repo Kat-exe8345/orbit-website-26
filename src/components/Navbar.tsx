@@ -20,10 +20,8 @@ export const Navbar = () => {
 
   useEffect(() => {
     // Prevent body scroll when mobile menu is open
-    document.documentElement.style.overflow = isOpen ? 'hidden' : '';
     document.body.style.overflow = isOpen ? 'hidden' : '';
     return () => {
-      document.documentElement.style.overflow = '';
       document.body.style.overflow = '';
     };
   }, [isOpen]);
@@ -44,7 +42,7 @@ export const Navbar = () => {
 
   // Navigation Links Array for cleaner maintenance
   const navLinks = [
-    { title: 'about-us', href: '/aboutus' },
+    { title: 'about-us', href: '/about-us' },
     { title: 'sponsors', href: '/sponsors'},
     { title: 'contact-us', href: '/contactus' },
     { title: 'blogs', href: '/blogpage' },
@@ -109,7 +107,7 @@ export const Navbar = () => {
     </nav>
     <div
       className={`lg:hidden fixed inset-0 z-98 w-full bg-black/90 backdrop-blur-sm pointer-events-auto
-        ${isOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-full'} transition-all duration-300 ease-in-out`}
+        ${isOpen ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 -translate-y-full pointer-events-none'} transition-all duration-300 ease-in-out`}
     >
       <div className="flex h-full flex-col pt-12.75">
         <div className="flex-1 min-h-0 overflow-y-auto">
