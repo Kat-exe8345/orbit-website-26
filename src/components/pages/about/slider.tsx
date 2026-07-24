@@ -1,5 +1,5 @@
 import { playfairDisplay } from "@components/fonts/typography"
-import { ImageSlider } from "@components/ui/image-slide"
+import { ImageSlider } from "@/components/misc/image-slide"
 
 export default function SliderSection() {
     return (
