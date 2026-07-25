@@ -5,7 +5,7 @@ export async function getMemberships(): Promise<PopulatedMembership[]> {
   const memberships = await payload.find({
     collection: "membership",
     limit: 0,
-    depth: 2,
+    depth: 3,
     sort: "role.displayOrder",
   });
   return memberships.docs as PopulatedMembership[];

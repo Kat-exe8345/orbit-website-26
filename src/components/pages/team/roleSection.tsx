@@ -3,10 +3,8 @@
 import { instrument } from "@components/fonts/typography";
 import { PopulatedMembership } from "@/lib/team";
 import MemberCard from "@components/pages/team/member-cards";
-import { useState } from "react";
 
 export default function RoleSection({ role, members }: { role: { name: string }; members: PopulatedMembership[] }) {
-    const [isOpen, setIsOpen] = useState(false);
     return (
         <div className="flex flex-col items-center w-full mt-12.5">
             <div className="px-8 pt-4 w-full flex flex-col justify-center">
