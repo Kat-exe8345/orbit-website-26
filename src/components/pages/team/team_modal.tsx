@@ -21,7 +21,7 @@ interface Year {
 
 export default function TeamSection({ teams, years, memberships }: { teams: Team[], years: Year[], memberships: PopulatedMembership[] }) {
     const [activeYear, setActiveYear] = useState<number | null>(years.length > 0 ? years[0].id : null);
-    const [activeTab, setActiveTab] = useState<number | "all_teams">(teams.length > 0 ? teams[0].id : "all_teams");
+    const [activeTab, setActiveTab] = useState<number | "all_teams">("all_teams");
     
 
     const visibleMemberships = useMemo(() => {
@@ -37,7 +37,7 @@ export default function TeamSection({ teams, years, memberships }: { teams: Team
             <div className="absolute flex flex-1 items-center top-0 left-0 min-w-screen h-12.5 z-10 px-4">
                 <button
                     key="all_teams"
-                    className={`flex shrink-0 justify-center items-center max-w-60 w-full h-full text-black ${geistMono.className} text-sm font-medium bg-white hover:bg-white/90 border-x border-x-black transition-all duration-300 ease-in-out`}
+                    className={`hidden lg:flex shrink-0 justify-center items-center max-w-60 w-full h-full ${geistMono.className} text-sm font-medium  ${activeTab !== "all_teams" ? "bg-[#040404] text-white border-x border-b border-[#0f0f0f] hover:bg-[#060606]" : "bg-white text-black hover:bg-white/90 border-none"} transition-all duration-300 ease-in-out`}
                     onClick={() => setActiveTab("all_teams")}
                 >
                     ALL TEAMS

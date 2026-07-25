@@ -1,7 +1,7 @@
 'use client';
 
 import { RoleGroup } from "@/lib/team";
-import RoleSection from "./roleSection";
+import RoleSection from "@components/pages/team/roleSection";
 
 export default function RoleSections({ roleGroups }: { roleGroups: RoleGroup[] }) {
     return (
