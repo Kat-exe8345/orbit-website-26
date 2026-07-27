@@ -1,5 +1,5 @@
 import { CollectionConfig } from 'payload';
-import { admin, superAdmin } from '@payload-collections/Users/access/accessRoles';
+import { anyone, superAdmin } from '@payload-collections/Users/access/accessRoles';
 
 export const SiteMedia: CollectionConfig = {
     slug: 'site-media',
@@ -12,7 +12,7 @@ export const SiteMedia: CollectionConfig = {
         group: 'Orbit Site-Settings',
     },
     access: {
-        read: admin,
+        read: anyone,
         create: superAdmin,
         update: superAdmin,
         delete: superAdmin,

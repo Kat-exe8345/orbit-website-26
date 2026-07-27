@@ -1,5 +1,5 @@
 import { CollectionConfig } from "payload";
-import { editor } from "../Users/access/accessRoles";
+import { editor, anyone } from "../Users/access/accessRoles";
 
 export const Membership: CollectionConfig = {
     slug: "membership",
@@ -8,7 +8,7 @@ export const Membership: CollectionConfig = {
         useAsTitle: "id",
     },
     access: {
-        read: editor,
+        read: anyone,
         create: editor,
         update: editor,
         delete: editor,

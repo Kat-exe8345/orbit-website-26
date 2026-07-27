@@ -1,5 +1,5 @@
 import { CollectionConfig } from 'payload';
-import { editor } from '@payload-collections/Users/access/accessRoles';
+import { editor, anyone } from '@payload-collections/Users/access/accessRoles';
 
 export const TeamMedia: CollectionConfig = {
     slug: 'team-media',
@@ -12,7 +12,7 @@ export const TeamMedia: CollectionConfig = {
         group: 'Media',
     },
     access: {
-        read: editor,
+        read: anyone,
         create: editor,
         update: editor,
         delete: editor,

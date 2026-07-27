@@ -46,6 +46,9 @@ PROJECT_OVERVIEW_REPORT.md
 AGENTS.md
 CLAUDE.md
 
+# payload media
+/media
+
 
 /src/generated/prisma
 .vscode

@@ -5,7 +5,7 @@ export default function HeroSection() {
         <section className="w-full flex flex-col shrink-0 justify-center items-center py-8 gap-10 mb-12.5">
             <div className="w-full flex flex-col justify-center items-start px-8 text-white">
                 <span className={`${inter.className} text-8xl font-medium`}>Meet the</span>
-                <span className={`${instrument.className} text-9xl underline underline-offset-8`}>team</span>
+                <span className={`${instrument.className} text-9xl`}>team</span>
             </div>
             <div className="w-full flex flex-col justify-center items-start px-8 text-white gap-12">
                 <span className={`${inter.className} text-2xl`}>

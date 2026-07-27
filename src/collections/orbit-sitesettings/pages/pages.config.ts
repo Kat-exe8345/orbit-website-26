@@ -1,5 +1,5 @@
 import { CollectionConfig } from 'payload';
-import { admin, superAdmin } from '@payload-collections/Users/access/accessRoles';
+import { anyone, superAdmin } from '@payload-collections/Users/access/accessRoles';
 
 export const Pages: CollectionConfig = {
     slug: 'pages',
@@ -8,7 +8,7 @@ export const Pages: CollectionConfig = {
         useAsTitle: 'name',
     },
     access: {
-        read: admin,
+        read: anyone,
         create: superAdmin,
         update: superAdmin,
         delete: superAdmin,
