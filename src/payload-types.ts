@@ -71,7 +71,7 @@ export interface Config {
     media: Media;
     members: Member;
     membership: Membership;
-    'member-roles': MemberRole;
+    roles: Role;
     teams: Team;
     year: Year;
     'team-media': TeamMedia;
@@ -88,7 +88,7 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     members: MembersSelect<false> | MembersSelect<true>;
     membership: MembershipSelect<false> | MembershipSelect<true>;
-    'member-roles': MemberRolesSelect<false> | MemberRolesSelect<true>;
+    roles: RolesSelect<false> | RolesSelect<true>;
     teams: TeamsSelect<false> | TeamsSelect<true>;
     year: YearSelect<false> | YearSelect<true>;
     'team-media': TeamMediaSelect<false> | TeamMediaSelect<true>;
@@ -289,7 +289,7 @@ export interface Membership {
   /**
    * Select the role for this membership
    */
-  role: number | MemberRole;
+  role: number | Role;
   /**
    * Select the year for this membership
    */
@@ -312,14 +312,15 @@ export interface Team {
   description?: string | null;
   teamLogo?: (number | null) | Media;
   displayOrder: number;
+  layout: 'grid' | 'inline';
   updatedAt: string;
   createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "member-roles".
+ * via the `definition` "roles".
  */
-export interface MemberRole {
+export interface Role {
   id: number;
   /**
    * Name of the role
@@ -463,8 +464,8 @@ export interface PayloadLockedDocument {
         value: number | Membership;
       } | null)
     | ({
-        relationTo: 'member-roles';
-        value: number | MemberRole;
+        relationTo: 'roles';
+        value: number | Role;
       } | null)
     | ({
         relationTo: 'teams';
@@ -617,9 +618,9 @@ export interface MembershipSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "member-roles_select".
+ * via the `definition` "roles_select".
  */
-export interface MemberRolesSelect<T extends boolean = true> {
+export interface RolesSelect<T extends boolean = true> {
   name?: T;
   slug?: T;
   description?: T;
@@ -637,6 +638,7 @@ export interface TeamsSelect<T extends boolean = true> {
   description?: T;
   teamLogo?: T;
   displayOrder?: T;
+  layout?: T;
   updatedAt?: T;
   createdAt?: T;
 }

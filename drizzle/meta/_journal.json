@@ -15,6 +15,20 @@
       "when": 1784651017420,
       "tag": "0001_safe_young_avengers",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1785118475977,
+      "tag": "0002_daily_carmella_unuscione",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1785490703919,
+      "tag": "0003_worthless_sabretooth",
+      "breakpoints": true
     }
   ]
 }

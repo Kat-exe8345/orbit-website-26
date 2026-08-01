@@ -39,7 +39,7 @@ export const Membership: CollectionConfig = {
             name: "role",
             type: "relationship",
             label: "Role",
-            relationTo: "member-roles",
+            relationTo: "roles",
             required: true,
             admin: {
                 description: "Select the role for this membership",

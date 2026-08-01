@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="scroll-smooth dark suppressHydrationWarning">
+    <html lang="en" className="scroll-smooth dark" suppressHydrationWarning={true}>
       <body className="min-h-screen antialiased">
         <Nav />
         {children}

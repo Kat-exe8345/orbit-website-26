@@ -2,7 +2,7 @@ import { CollectionConfig }  from 'payload';
 import { editor, anyone } from '../Users/access/accessRoles';
 
 export const MemberRoles: CollectionConfig = {
-    slug: 'member-roles',
+    slug: 'roles',
     admin: {
         group: 'Orbit-Teams',
         useAsTitle: 'name',

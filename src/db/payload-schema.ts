@@ -49,6 +49,10 @@ export const enum_membership_study_year = pgEnum("enum_membership_study_year", [
   "year3",
   "year4",
 ]);
+export const enum_teams_layout = pgEnum("enum_teams_layout", [
+  "grid",
+  "inline",
+]);
 
 export const payload_users_sessions = pgTable(
   "payload_users_sessions",
@@ -241,7 +245,7 @@ export const membership = pgTable(
       }),
     role: integer("role_id")
       .notNull()
-      .references(() => member_roles.id, {
+      .references(() => roles.id, {
         onDelete: "set null",
       }),
     year: integer("year_id")
@@ -275,8 +279,8 @@ export const membership = pgTable(
   ],
 );
 
-export const member_roles = pgTable(
-  "member_roles",
+export const roles = pgTable(
+  "roles",
   {
     id: serial("id").primaryKey(),
     name: varchar("name").notNull(),
@@ -299,8 +303,8 @@ export const member_roles = pgTable(
       .notNull(),
   },
   (columns) => [
-    index("member_roles_updated_at_idx").on(columns.updatedAt),
-    index("member_roles_created_at_idx").on(columns.createdAt),
+    index("roles_updated_at_idx").on(columns.updatedAt),
+    index("roles_created_at_idx").on(columns.createdAt),
   ],
 );
 
@@ -315,6 +319,7 @@ export const teams = pgTable(
       onDelete: "set null",
     }),
     displayOrder: numeric("display_order", { mode: "number" }).notNull(),
+    layout: enum_teams_layout("layout").notNull().default("grid"),
     updatedAt: timestamp("updated_at", {
       mode: "string",
       withTimezone: true,
@@ -563,7 +568,7 @@ export const payload_locked_documents_rels = pgTable(
     mediaID: integer("media_id"),
     membersID: integer("members_id"),
     membershipID: integer("membership_id"),
-    "member-rolesID": integer("member_roles_id"),
+    rolesID: integer("roles_id"),
     teamsID: integer("teams_id"),
     yearID: integer("year_id"),
     "team-mediaID": integer("team_media_id"),
@@ -582,9 +587,7 @@ export const payload_locked_documents_rels = pgTable(
     index("payload_locked_documents_rels_membership_id_idx").on(
       columns.membershipID,
     ),
-    index("payload_locked_documents_rels_member_roles_id_idx").on(
-      columns["member-rolesID"],
-    ),
+    index("payload_locked_documents_rels_roles_id_idx").on(columns.rolesID),
     index("payload_locked_documents_rels_teams_id_idx").on(columns.teamsID),
     index("payload_locked_documents_rels_year_id_idx").on(columns.yearID),
     index("payload_locked_documents_rels_team_media_id_idx").on(
@@ -620,9 +623,9 @@ export const payload_locked_documents_rels = pgTable(
       name: "payload_locked_documents_rels_membership_fk",
     }).onDelete("cascade"),
     foreignKey({
-      columns: [columns["member-rolesID"]],
-      foreignColumns: [member_roles.id],
-      name: "payload_locked_documents_rels_member_roles_fk",
+      columns: [columns["rolesID"]],
+      foreignColumns: [roles.id],
+      name: "payload_locked_documents_rels_roles_fk",
     }).onDelete("cascade"),
     foreignKey({
       columns: [columns["teamsID"]],
@@ -783,9 +786,9 @@ export const relations_membership = relations(membership, ({ one }) => ({
     references: [teams.id],
     relationName: "team",
   }),
-  role: one(member_roles, {
+  role: one(roles, {
     fields: [membership.role],
-    references: [member_roles.id],
+    references: [roles.id],
     relationName: "role",
   }),
   year: one(year, {
@@ -794,7 +797,7 @@ export const relations_membership = relations(membership, ({ one }) => ({
     relationName: "year",
   }),
 }));
-export const relations_member_roles = relations(member_roles, () => ({}));
+export const relations_roles = relations(roles, () => ({}));
 export const relations_teams = relations(teams, ({ one }) => ({
   teamLogo: one(media, {
     fields: [teams.teamLogo],
@@ -835,10 +838,10 @@ export const relations_payload_locked_documents_rels = relations(
       references: [membership.id],
       relationName: "membership",
     }),
-    "member-rolesID": one(member_roles, {
-      fields: [payload_locked_documents_rels["member-rolesID"]],
-      references: [member_roles.id],
-      relationName: "member-roles",
+    rolesID: one(roles, {
+      fields: [payload_locked_documents_rels.rolesID],
+      references: [roles.id],
+      relationName: "roles",
     }),
     teamsID: one(teams, {
       fields: [payload_locked_documents_rels.teamsID],
@@ -908,13 +911,14 @@ type DatabaseSchema = {
   enum_members_social_links_platform: typeof enum_members_social_links_platform;
   enum_members_department: typeof enum_members_department;
   enum_membership_study_year: typeof enum_membership_study_year;
+  enum_teams_layout: typeof enum_teams_layout;
   payload_users_sessions: typeof payload_users_sessions;
   payload_users: typeof payload_users;
   media: typeof media;
   members_social_links: typeof members_social_links;
   members: typeof members;
   membership: typeof membership;
-  member_roles: typeof member_roles;
+  roles: typeof roles;
   teams: typeof teams;
   year: typeof year;
   team_media: typeof team_media;
@@ -932,7 +936,7 @@ type DatabaseSchema = {
   relations_members_social_links: typeof relations_members_social_links;
   relations_members: typeof relations_members;
   relations_membership: typeof relations_membership;
-  relations_member_roles: typeof relations_member_roles;
+  relations_roles: typeof relations_roles;
   relations_teams: typeof relations_teams;
   relations_year: typeof relations_year;
   relations_team_media: typeof relations_team_media;

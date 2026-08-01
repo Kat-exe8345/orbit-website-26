@@ -43,6 +43,22 @@ export const Teams: CollectionConfig = {
             name: 'displayOrder',
             type: 'number',
             required: true,
+        },
+        {
+            name: 'layout',
+            type: 'select',
+            required: true,
+            options: [
+                {
+                    label: 'Grid',
+                    value: 'grid',
+                },
+                {
+                    label: 'In-line',
+                    value: 'inline',
+                },
+            ],
+            defaultValue: 'grid',
         }
     ]
 }

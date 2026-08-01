@@ -13,7 +13,7 @@ type ASCIIImageProps = {
   staggerDelay?: number;
 };
 
-function ASCIIImage({
+export default function ASCIIImage({
   src,
   scrambleCount = 5,
   scrambleSpeedMs = 100,
@@ -117,54 +117,5 @@ function ASCIIImage({
         <canvas ref={canvasRef} />
       </div>
     </div>
-  );
-}
-
-export default function Page() {
-  return (
-    <main className="h-screen w-full grid grid-cols-3 gap-10">
-      <ASCIIImage
-        src="\images\misc\SpaceX.jpg"
-        scrambleCount={5}
-        scrambleSpeedMs={100}
-        cellAppearMs={1.25}
-        staggerDelay={0}
-      />
-      <ASCIIImage
-        src="\images\members\Parth Dinil.jpg"
-        scrambleCount={5}
-        scrambleSpeedMs={100}
-        cellAppearMs={1.25}
-        staggerDelay={0}
-      />
-      <ASCIIImage
-        src="\images\members\Bala Guru Prasaad.jpg"
-        scrambleCount={5}
-        scrambleSpeedMs={100}
-        cellAppearMs={1.25}
-        staggerDelay={0}
-      />
-      <ASCIIImage
-        src="\images\members\Giridhar Ajith.jpg"
-        scrambleCount={5}
-        scrambleSpeedMs={100}
-        cellAppearMs={1.25}
-        staggerDelay={0}
-      />
-      <ASCIIImage
-        src="\images\members\Nikita Soni.jpg"
-        scrambleCount={5}
-        scrambleSpeedMs={100}
-        cellAppearMs={1.25}
-        staggerDelay={0}
-      />
-      <ASCIIImage
-        src="\images\members\Vaishnav S.jpg"
-        scrambleCount={5}
-        scrambleSpeedMs={100}
-        cellAppearMs={1.25}
-        staggerDelay={0}
-      />
-    </main>
   );
 }
