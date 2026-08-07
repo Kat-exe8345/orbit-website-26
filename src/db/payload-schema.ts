@@ -520,6 +520,56 @@ export const site_media = pgTable(
   ],
 );
 
+export const about_us_media = pgTable(
+  "about_us_media",
+  {
+    id: serial("id").primaryKey(),
+    alt: varchar("alt").notNull(),
+    caption: varchar("caption").notNull(),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+    url: varchar("url"),
+    thumbnailURL: varchar("thumbnail_u_r_l"),
+    filename: varchar("filename"),
+    mimeType: varchar("mime_type"),
+    filesize: numeric("filesize", { mode: "number" }),
+    width: numeric("width", { mode: "number" }),
+    height: numeric("height", { mode: "number" }),
+    focalX: numeric("focal_x", { mode: "number" }),
+    focalY: numeric("focal_y", { mode: "number" }),
+    sizes_thumbnail_url: varchar("sizes_thumbnail_url"),
+    sizes_thumbnail_width: numeric("sizes_thumbnail_width", { mode: "number" }),
+    sizes_thumbnail_height: numeric("sizes_thumbnail_height", {
+      mode: "number",
+    }),
+    sizes_thumbnail_mimeType: varchar("sizes_thumbnail_mime_type"),
+    sizes_thumbnail_filesize: numeric("sizes_thumbnail_filesize", {
+      mode: "number",
+    }),
+    sizes_thumbnail_filename: varchar("sizes_thumbnail_filename"),
+  },
+  (columns) => [
+    index("about_us_media_updated_at_idx").on(columns.updatedAt),
+    index("about_us_media_created_at_idx").on(columns.createdAt),
+    uniqueIndex("about_us_media_filename_idx").on(columns.filename),
+    index("about_us_media_sizes_thumbnail_sizes_thumbnail_filename_idx").on(
+      columns.sizes_thumbnail_filename,
+    ),
+  ],
+);
+
 export const payload_kv = pgTable(
   "payload_kv",
   {
@@ -574,6 +624,7 @@ export const payload_locked_documents_rels = pgTable(
     "team-mediaID": integer("team_media_id"),
     pagesID: integer("pages_id"),
     "site-mediaID": integer("site_media_id"),
+    "about-us-mediaID": integer("about_us_media_id"),
   },
   (columns) => [
     index("payload_locked_documents_rels_order_idx").on(columns.order),
@@ -596,6 +647,9 @@ export const payload_locked_documents_rels = pgTable(
     index("payload_locked_documents_rels_pages_id_idx").on(columns.pagesID),
     index("payload_locked_documents_rels_site_media_id_idx").on(
       columns["site-mediaID"],
+    ),
+    index("payload_locked_documents_rels_about_us_media_id_idx").on(
+      columns["about-us-mediaID"],
     ),
     foreignKey({
       columns: [columns["parent"]],
@@ -651,6 +705,11 @@ export const payload_locked_documents_rels = pgTable(
       columns: [columns["site-mediaID"]],
       foreignColumns: [site_media.id],
       name: "payload_locked_documents_rels_site_media_fk",
+    }).onDelete("cascade"),
+    foreignKey({
+      columns: [columns["about-us-mediaID"]],
+      foreignColumns: [about_us_media.id],
+      name: "payload_locked_documents_rels_about_us_media_fk",
     }).onDelete("cascade"),
   ],
 );
@@ -809,6 +868,7 @@ export const relations_year = relations(year, () => ({}));
 export const relations_team_media = relations(team_media, () => ({}));
 export const relations_pages = relations(pages, () => ({}));
 export const relations_site_media = relations(site_media, () => ({}));
+export const relations_about_us_media = relations(about_us_media, () => ({}));
 export const relations_payload_kv = relations(payload_kv, () => ({}));
 export const relations_payload_locked_documents_rels = relations(
   payload_locked_documents_rels,
@@ -868,6 +928,11 @@ export const relations_payload_locked_documents_rels = relations(
       references: [site_media.id],
       relationName: "site-media",
     }),
+    "about-us-mediaID": one(about_us_media, {
+      fields: [payload_locked_documents_rels["about-us-mediaID"]],
+      references: [about_us_media.id],
+      relationName: "about-us-media",
+    }),
   }),
 );
 export const relations_payload_locked_documents = relations(
@@ -924,6 +989,7 @@ type DatabaseSchema = {
   team_media: typeof team_media;
   pages: typeof pages;
   site_media: typeof site_media;
+  about_us_media: typeof about_us_media;
   payload_kv: typeof payload_kv;
   payload_locked_documents: typeof payload_locked_documents;
   payload_locked_documents_rels: typeof payload_locked_documents_rels;
@@ -942,6 +1008,7 @@ type DatabaseSchema = {
   relations_team_media: typeof relations_team_media;
   relations_pages: typeof relations_pages;
   relations_site_media: typeof relations_site_media;
+  relations_about_us_media: typeof relations_about_us_media;
   relations_payload_kv: typeof relations_payload_kv;
   relations_payload_locked_documents_rels: typeof relations_payload_locked_documents_rels;
   relations_payload_locked_documents: typeof relations_payload_locked_documents;

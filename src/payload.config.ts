@@ -7,8 +7,19 @@ import sharp from "sharp";
 
 import { PayloadUsers } from "@payload-collections/Users/config";
 import { Media } from "@payload-collections/Media/config";
-import { MemberRoles, Teams, Year, Members, Membership, TeamMedia } from "@payload-collections/orbit-teams/config";
-import { Pages, SiteMedia } from "@payload-collections/orbit-sitesettings/config";
+import {
+  MemberRoles,
+  Teams,
+  Year,
+  Members,
+  Membership,
+  TeamMedia,
+} from "@payload-collections/orbit-teams/config";
+import {
+  AboutUsMedia,
+  Pages,
+  SiteMedia,
+} from "@payload-collections/orbit-sitesettings/config";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -20,7 +31,19 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [PayloadUsers, Media, Members, Membership, MemberRoles, Teams, Year, TeamMedia, Pages, SiteMedia],
+  collections: [
+    PayloadUsers,
+    Media,
+    Members,
+    Membership,
+    MemberRoles,
+    Teams,
+    Year,
+    TeamMedia,
+    Pages,
+    SiteMedia,
+    AboutUsMedia,
+  ],
   upload: {
     limits: {
       fileSize: 15000000, // 15MB
