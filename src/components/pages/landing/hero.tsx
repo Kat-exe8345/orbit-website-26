@@ -23,7 +23,7 @@ export default function HeroSection() {
           restartPause={500}
           lines={[
             {
-              text: "Pushing the ",
+              text: "Pushing every ",
               as: "h1",
               className: `${geist.className} text-[#f3f3f3] text-7xl font-normal text-center tracking-tighter`,
               typingSpeed: 150,
@@ -34,8 +34,7 @@ export default function HeroSection() {
               text: "limit.",
               as: "h1",
               className: `${instrument.className} text-white text-9xl font-medium text-center tracking-tighter`,
-              typingSpeed: 50,
-              pauseBefore: 1000,
+              typingSpeed: 150,
               cursorColor: "#FFFFFF",
               cursorChar: "",
             },
