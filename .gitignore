@@ -52,3 +52,7 @@ media/
 
 /src/generated/prisma
 .vscode
+
+# AI files
+AGENTS.md
+CLAUDE.md

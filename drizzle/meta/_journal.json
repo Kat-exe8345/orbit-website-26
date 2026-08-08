@@ -29,6 +29,13 @@
       "when": 1785490703919,
       "tag": "0003_worthless_sabretooth",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1786131535659,
+      "tag": "0004_supreme_bucky",
+      "breakpoints": true
     }
   ]
 }

@@ -77,6 +77,7 @@ export interface Config {
     'team-media': TeamMedia;
     pages: Page;
     'site-media': SiteMedia;
+    'about-us-media': AboutUsMedia;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -94,6 +95,7 @@ export interface Config {
     'team-media': TeamMediaSelect<false> | TeamMediaSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
     'site-media': SiteMediaSelect<false> | SiteMediaSelect<true>;
+    'about-us-media': AboutUsMediaSelect<false> | AboutUsMediaSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -225,6 +227,9 @@ export interface Member {
   socialLinks?:
     | {
         platform: 'instagram' | 'linkedin' | 'github' | 'website';
+        /**
+         * Use either 'https://www.' or 'https://', or just the domain name (e.g., 'instagram.com/user-name' for instagram) for the URL. The link will be automatically prefixed with 'https://' if not provided. Follow this for other platforms as well.
+         */
         url: string;
         id?: string | null;
       }[]
@@ -425,6 +430,42 @@ export interface SiteMedia {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "about-us-media".
+ */
+export interface AboutUsMedia {
+  id: number;
+  /**
+   * This text will be used as the title for the image
+   */
+  alt: string;
+  /**
+   * This text will be used as the caption for the image
+   */
+  caption: string;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+  sizes?: {
+    thumbnail?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -486,6 +527,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'site-media';
         value: number | SiteMedia;
+      } | null)
+    | ({
+        relationTo: 'about-us-media';
+        value: number | AboutUsMedia;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -737,6 +782,39 @@ export interface SiteMediaSelect<T extends boolean = true> {
               filename?: T;
             };
         logo?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+      };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "about-us-media_select".
+ */
+export interface AboutUsMediaSelect<T extends boolean = true> {
+  alt?: T;
+  caption?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+  sizes?:
+    | T
+    | {
+        thumbnail?:
           | T
           | {
               url?: T;

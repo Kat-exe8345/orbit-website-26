@@ -4,14 +4,27 @@ import path from "path";
 import { buildConfig } from "payload";
 import { fileURLToPath } from "url";
 import sharp from "sharp";
+import { s3Storage } from "@payloadcms/storage-s3";
 
 import { PayloadUsers } from "@payload-collections/Users/config";
 import { Media } from "@payload-collections/Media/config";
-import { MemberRoles, Teams, Year, Members, Membership, TeamMedia } from "@payload-collections/orbit-teams/config";
-import { Pages, SiteMedia } from "@payload-collections/orbit-sitesettings/config";
+import {
+  MemberRoles,
+  Teams,
+  Year,
+  Members,
+  Membership,
+  TeamMedia,
+} from "@payload-collections/orbit-teams/config";
+import {
+  AboutUsMedia,
+  Pages,
+  SiteMedia,
+} from "@payload-collections/orbit-sitesettings/config";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
+const useR2 = process.env.USE_R2 === "true";
 
 export default buildConfig({
   admin: {
@@ -20,7 +33,19 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [PayloadUsers, Media, Members, Membership, MemberRoles, Teams, Year, TeamMedia, Pages, SiteMedia],
+  collections: [
+    PayloadUsers,
+    Media,
+    Members,
+    Membership,
+    MemberRoles,
+    Teams,
+    Year,
+    TeamMedia,
+    Pages,
+    SiteMedia,
+    AboutUsMedia,
+  ],
   upload: {
     limits: {
       fileSize: 15000000, // 15MB
@@ -39,5 +64,24 @@ export default buildConfig({
     generateSchemaOutputFile: path.resolve(dirname, "./db/payload-schema.ts"),
   }),
   sharp,
-  plugins: [],
+  plugins: [
+    s3Storage({
+      enabled: useR2,
+      collections: {
+        media: true,
+        "team-media": true,
+        "site-media": true,
+        "about-us-media": true,
+      },
+      bucket: process.env.S3_BUCKET!,
+      config: {
+        credentials: {
+          accessKeyId: process.env.S3_ACCESS_KEY_ID!,
+          secretAccessKey: process.env.S3_SECRET!,
+        },
+        region: "auto",
+        endpoint: process.env.S3_ENDPOINT!,
+      },
+    }),
+  ],
 });
